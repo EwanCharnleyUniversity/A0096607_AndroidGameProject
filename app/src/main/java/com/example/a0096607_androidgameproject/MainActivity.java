@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+
 // If App is not found
 // do in terminal: \rm -r .android/
 public class MainActivity extends AppCompatActivity {

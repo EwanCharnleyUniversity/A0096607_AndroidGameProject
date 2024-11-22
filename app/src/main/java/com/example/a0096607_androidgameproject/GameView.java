@@ -1,18 +1,15 @@
 package com.example.a0096607_androidgameproject;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.RectF;
 
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.example.a0096607_androidgameproject.Entities.Bullet;
 import com.example.a0096607_androidgameproject.Weapons.Crossbow;
 
 
@@ -30,26 +27,21 @@ public class GameView extends SurfaceView implements Runnable {
 
     // Heat System
     private boolean OVERHEATING = false;
-    private float heat = 0.0f;
-    private float heatCapacity = 250.0f;
+    private int heat = 0;
+    private int heatCapacity = 250;
 
     // Graphics Stuff
     private Canvas canvas;
-    private Bitmap bitmap;
-    private Rect frameToDraw = new Rect(0,0,250,250);
-    private RectF whereToDraw = new RectF(0, 0, 250, 250);
 
-    // Weapon testing
+    // Class Tests
     private Crossbow testWeapon;
-
 
 
     public GameView(Context context) {
         super(context);
         surfaceHolder = getHolder();
-        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.coffee);
-        bitmap = Bitmap.createScaledBitmap(bitmap, 250, 250, false);
-        testWeapon = new Crossbow();
+        testWeapon = new Crossbow(context);
+
     }
 
 
@@ -57,7 +49,7 @@ public class GameView extends SurfaceView implements Runnable {
     public void run() {
         Log.d("GameView", "Beginning Runtime of Game");
 
-        while (playing){
+        while (playing) {
             TIMESINCE = System.currentTimeMillis() - TIME;
 
             if (TIMESINCE > 1000 / FPS) {
@@ -71,19 +63,22 @@ public class GameView extends SurfaceView implements Runnable {
     // Handles the global heat value
     // May need to refactor later.
     public void HeatTick() {
-        if (heat - 0.1 < 0) {
+        if (heat - 1 < 0) {
             if (heat != 0)
                 heat = 0;
 
             return;
         }
 
-        heat -= 0.1f;
+        heat -= 1;
 
         if (OVERHEATING) {
             if (heat + 75.0f < heatCapacity)
             {
                 OVERHEATING = false;
+                return;
+            }
+            else {
                 return;
             }
         }
@@ -98,11 +93,8 @@ public class GameView extends SurfaceView implements Runnable {
     public void update() {
         HeatTick();
         if (OVERHEATING) {
-            //Log.d("GameView", "You are overheating! Heat is at: " + heat);
             return;
         }
-
-        //Log.d("GameView", "Heat: " + heat);
     }
 
 
@@ -114,9 +106,8 @@ public class GameView extends SurfaceView implements Runnable {
             canvas = surfaceHolder.lockCanvas();
             canvas.drawColor(Color.WHITE);
 
-            // Test Sprite
-            whereToDraw.set(0, 0, 500, 500);
-            canvas.drawBitmap(bitmap, frameToDraw, whereToDraw, null);
+            testWeapon.Draw(canvas);
+
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
@@ -125,6 +116,7 @@ public class GameView extends SurfaceView implements Runnable {
     // When the view is not being run.
     public void pause() {
         playing = false;
+
         try {
             // Attempt to rejoin with the Main Activity
             Log.d("GameView", "Paused");
@@ -138,7 +130,9 @@ public class GameView extends SurfaceView implements Runnable {
     public void resume() {
         playing = true;
         gameThread = new Thread(this);
+
         Log.d("GameView", "Resumed");
+
         gameThread.start();
     }
 
@@ -147,11 +141,13 @@ public class GameView extends SurfaceView implements Runnable {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN:
-                Log.d("GameView_Weapon", "Crossbow's current clip is: " + testWeapon.clipCurrent);
-                Log.d("GameView_Weapon", "Crossbow's current ammo is: " + testWeapon.ammoCurrent);
-                testWeapon.Activate();
 
+            case MotionEvent.ACTION_DOWN:
+                testWeapon.Activate();
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                testWeapon.Simulate(new Vector2D(event.getRawX(),event.getRawY()));
                 break;
         }
         return true;
