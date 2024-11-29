@@ -6,6 +6,8 @@ import android.util.Log;
 import com.example.a0096607_androidgameproject.Entities.Entity;
 import com.example.a0096607_androidgameproject.Vector2D;
 
+import java.util.Random;
+
 
 public abstract class BaseWeapon extends Entity {
     // Ammunition and Clip
@@ -13,7 +15,8 @@ public abstract class BaseWeapon extends Entity {
 
     public BaseWeapon(Context context) {
         super(context);
-        position.Y = 1700;
+        position.x = new Random().nextInt(1000);
+        position.y = 2000;
     }
 
     // When the weapon is activated, we check its ammo
@@ -40,8 +43,7 @@ public abstract class BaseWeapon extends Entity {
 
     @Override
     public void Simulate(Vector2D userPosition) {
-        Log.d("BaseWeapon", "User Input detected!");
-        position.X = userPosition.X - (bounding.X / 2);
+        position.x = userPosition.x;
     }
 
     public abstract void FireWeapon(Context context);

@@ -4,12 +4,17 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Canvas;
 
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.example.a0096607_androidgameproject.Entities.Bullet;
+import com.example.a0096607_androidgameproject.Entities.Enemy;
+import com.example.a0096607_androidgameproject.Entities.EnemyManager;
+import com.example.a0096607_androidgameproject.Graphics.DrawLine;
+import com.example.a0096607_androidgameproject.Mechanics.HeatManager;
+import com.example.a0096607_androidgameproject.Weapons.BulletManager;
 import com.example.a0096607_androidgameproject.Weapons.Crossbow;
 
 
@@ -21,17 +26,17 @@ public class GameView extends SurfaceView implements Runnable {
     private boolean playing = true;
 
     // Time Variables and FPS
-    private int FPS = 60;
+    private final int FPS = 60;
     private long TIME;
     private long TIMESINCE;
 
-    // Heat System
-    private boolean OVERHEATING = false;
-    private int heat = 0;
-    private int heatCapacity = 250;
-
     // Graphics Stuff
     private Canvas canvas;
+
+    // Managers
+    HeatManager heatManager;
+    BulletManager bulletManager;
+    EnemyManager enemyManager;
 
     // Class Tests
     private Crossbow testWeapon;
@@ -39,9 +44,13 @@ public class GameView extends SurfaceView implements Runnable {
 
     public GameView(Context context) {
         super(context);
+
+        bulletManager = new BulletManager();
+        enemyManager = new EnemyManager();
+        heatManager = new HeatManager();
+
         surfaceHolder = getHolder();
         testWeapon = new Crossbow(context);
-
     }
 
 
@@ -55,46 +64,24 @@ public class GameView extends SurfaceView implements Runnable {
             if (TIMESINCE > 1000 / FPS) {
                 update();
                 draw();
+                enemyManager.Spawner(getContext(), TIMESINCE);
+                bulletManager.SimulateBullets(TIMESINCE);
                 TIME = System.currentTimeMillis();
             }
-        }
-    }
-
-    // Handles the global heat value
-    // May need to refactor later.
-    public void HeatTick() {
-        if (heat - 1 < 0) {
-            if (heat != 0)
-                heat = 0;
-
-            return;
-        }
-
-        heat -= 1;
-
-        if (OVERHEATING) {
-            if (heat + 75.0f < heatCapacity)
-            {
-                OVERHEATING = false;
-                return;
-            }
-            else {
-                return;
-            }
-        }
-
-        if (heat > heatCapacity) {
-            OVERHEATING = true;
         }
     }
 
 
     // Updates all in-game actions based on tick speed.
     public void update() {
-        HeatTick();
-        if (OVERHEATING) {
+        heatManager.Simulate();
+
+        if (heatManager.OVERHEATING) {
+            Log.d("Gameview","You are Overheating!");
             return;
         }
+
+        enemyManager.SimulateEnemies();
     }
 
 
@@ -105,6 +92,9 @@ public class GameView extends SurfaceView implements Runnable {
             // Background
             canvas = surfaceHolder.lockCanvas();
             canvas.drawColor(Color.WHITE);
+
+            bulletManager.RenderBullets(canvas);
+            enemyManager.RenderEnemies(canvas);
 
             testWeapon.Draw(canvas);
 
@@ -143,11 +133,19 @@ public class GameView extends SurfaceView implements Runnable {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
             case MotionEvent.ACTION_DOWN:
-                testWeapon.Activate();
+                if (heatManager.OVERHEATING) {
+                    break;
+                }
+
+                //testWeapon.Activate();
+                bulletManager.SpawnBullet(testWeapon.position);
+                //heatManager.DumpHeat(15f);
+
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 testWeapon.Simulate(new Vector2D(event.getRawX(),event.getRawY()));
+
                 break;
         }
         return true;

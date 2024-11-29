@@ -1,4 +1,4 @@
-package com.example.a0096607_androidgameproject;
+package com.example.a0096607_androidgameproject.Graphics;
 
 import android.content.Context;
 import android.graphics.Bitmap;

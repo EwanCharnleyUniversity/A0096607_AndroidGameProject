@@ -7,7 +7,7 @@ import android.graphics.Rect;
 
 import com.example.a0096607_androidgameproject.R;
 import com.example.a0096607_androidgameproject.Vector2D;
-import com.example.a0096607_androidgameproject.WorldTexture;
+import com.example.a0096607_androidgameproject.Graphics.WorldTexture;
 
 
 
@@ -22,28 +22,27 @@ public abstract class Entity {
     // TODO: abstract position, velocity, and texture generation
     // Bounding could plausibly be relegated to an internal function.
     public Entity(Context context) {
-        position = new Vector2D(500,500);
+        position = new Vector2D(0,0);
         velocity = new Vector2D(0,0.025f);
 
         bounding = new Vector2D(250,250);
 
-        imageTexture = new WorldTexture((int)bounding.X,(int)bounding.Y, R.drawable.coffee, context);
+        imageTexture = new WorldTexture((int)bounding.x,(int)bounding.y, R.drawable.coffee, context);
     }
 
     public void Simulate() {}
 
 
     public void Draw(Canvas view) {
-
         Rect pos = new Rect(
-                (int)position.X,
-                (int)position.Y,
-                (int)(position.X + bounding.X),
-                (int)(position.Y + bounding.Y)
+                (int)(position.x - bounding.x / 2),
+                (int)(position.y - bounding.y / 2),
+                (int)(position.x + bounding.x / 2),
+                (int)(position.y + bounding.y / 2)
         );
 
         imageTexture.Draw(view, pos);
     }
 
-    public abstract void Simulate(Vector2D userPosition);
+    public void Simulate(Vector2D userPosition) {}
 }
