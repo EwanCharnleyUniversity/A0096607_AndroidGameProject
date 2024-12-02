@@ -4,16 +4,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Canvas;
 
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.example.a0096607_androidgameproject.Entities.Enemy;
 import com.example.a0096607_androidgameproject.Entities.EnemyManager;
-import com.example.a0096607_androidgameproject.Graphics.DrawLine;
-import com.example.a0096607_androidgameproject.Mechanics.HeatManager;
+import com.example.a0096607_androidgameproject.Mechanics.BaseManager;
 import com.example.a0096607_androidgameproject.Weapons.BulletManager;
 import com.example.a0096607_androidgameproject.Weapons.Crossbow;
 
@@ -27,16 +24,16 @@ public class GameView extends SurfaceView implements Runnable {
 
     // Time Variables and FPS
     private final int FPS = 60;
-    private long TIME;
-    private long TIMESINCE;
+    private long clock;
+    private long deltaTime;
 
     // Graphics Stuff
     private Canvas canvas;
 
     // Managers
-    HeatManager heatManager;
-    BulletManager bulletManager;
-    EnemyManager enemyManager;
+    BaseManager base;
+    BulletManager bullets;
+    EnemyManager enemies;
 
     // Class Tests
     private Crossbow testWeapon;
@@ -45,9 +42,9 @@ public class GameView extends SurfaceView implements Runnable {
     public GameView(Context context) {
         super(context);
 
-        bulletManager = new BulletManager();
-        enemyManager = new EnemyManager();
-        heatManager = new HeatManager();
+        base = new BaseManager();
+        bullets = new BulletManager();
+        enemies = new EnemyManager();
 
         surfaceHolder = getHolder();
         testWeapon = new Crossbow(context);
@@ -59,14 +56,14 @@ public class GameView extends SurfaceView implements Runnable {
         Log.d("GameView", "Beginning Runtime of Game");
 
         while (playing) {
-            TIMESINCE = System.currentTimeMillis() - TIME;
+            deltaTime = System.currentTimeMillis() - clock;
 
-            if (TIMESINCE > 1000 / FPS) {
+            if (deltaTime > 1000 / FPS) {
                 update();
                 draw();
-                enemyManager.Spawner(getContext(), TIMESINCE);
-                bulletManager.SimulateBullets(TIMESINCE);
-                TIME = System.currentTimeMillis();
+                enemies.Spawner(getContext(), deltaTime);
+                bullets.SimulateBullets(deltaTime, enemies);
+                clock = System.currentTimeMillis();
             }
         }
     }
@@ -74,14 +71,14 @@ public class GameView extends SurfaceView implements Runnable {
 
     // Updates all in-game actions based on tick speed.
     public void update() {
-        heatManager.Simulate();
+        base.Simulate();
 
-        if (heatManager.OVERHEATING) {
+        if (base.heat.OVERHEATING) {
             Log.d("Gameview","You are Overheating!");
             return;
         }
 
-        enemyManager.SimulateEnemies();
+        enemies.SimulateEnemies(deltaTime);
     }
 
 
@@ -93,8 +90,8 @@ public class GameView extends SurfaceView implements Runnable {
             canvas = surfaceHolder.lockCanvas();
             canvas.drawColor(Color.WHITE);
 
-            bulletManager.RenderBullets(canvas);
-            enemyManager.RenderEnemies(canvas);
+            bullets.RenderBullets(canvas);
+            enemies.RenderEnemies(canvas);
 
             testWeapon.Draw(canvas);
 
@@ -127,18 +124,19 @@ public class GameView extends SurfaceView implements Runnable {
     }
 
 
+
     // Basic Touch Input.
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
 
             case MotionEvent.ACTION_DOWN:
-                if (heatManager.OVERHEATING) {
+                if (base.heat.OVERHEATING) {
                     break;
                 }
 
                 //testWeapon.Activate();
-                bulletManager.SpawnBullet(testWeapon.position);
+                bullets.SpawnBullet(testWeapon.position);
                 //heatManager.DumpHeat(15f);
 
                 break;

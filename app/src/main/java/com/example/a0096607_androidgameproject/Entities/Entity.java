@@ -21,16 +21,16 @@ public abstract class Entity {
 
     // TODO: abstract position, velocity, and texture generation
     // Bounding could plausibly be relegated to an internal function.
-    public Entity(Context context) {
+    public Entity(Context context, Vector2D Bounding, int Texture) {
         position = new Vector2D(0,0);
         velocity = new Vector2D(0,0.025f);
 
-        bounding = new Vector2D(250,250);
+        bounding = Bounding;
 
-        imageTexture = new WorldTexture((int)bounding.x,(int)bounding.y, R.drawable.coffee, context);
+        imageTexture = new WorldTexture((int)bounding.x,(int)bounding.y, Texture, context);
     }
 
-    public void Simulate() {}
+    public void Simulate(long deltaTime) {}
 
 
     public void Draw(Canvas view) {

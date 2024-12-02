@@ -19,8 +19,7 @@ public class Crossbow extends BaseWeapon {
     }
 
     @Override
-    public void Simulate() {
-        super.Simulate();
-
+    public void Simulate(long deltaTime) {
+        super.Simulate(deltaTime);
     }
 }

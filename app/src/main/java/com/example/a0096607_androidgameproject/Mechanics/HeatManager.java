@@ -16,6 +16,7 @@ public class HeatManager {
 
 
     // An overhead to give overheating more time to remain active.
+    // Overhead is a fouth of the capacity, might change to a hard value.
     private float Overhead() {
         return heatCapacity / 4;
     }
@@ -23,7 +24,7 @@ public class HeatManager {
     private void HeatTick() {
         heatStored -= heatLoss;
 
-        if (heatStored - heatLoss < 0) {
+        if (heatStored < 0) {
             heatStored = 0.f;
         }
 

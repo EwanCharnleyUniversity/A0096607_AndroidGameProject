@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import com.example.a0096607_androidgameproject.Entities.EnemyManager;
 import com.example.a0096607_androidgameproject.Vector2D;
 
 
@@ -36,14 +37,14 @@ public class BulletManager {
     }
 
 
-    public synchronized void SimulateBullets(long time) {
+    public synchronized void SimulateBullets(long time, EnemyManager Enemies) {
 
         if (bullets.isEmpty()) {
             return;
         }
 
         for(Bullet target : bullets) {
-            target.Simulate(time);
+            target.Simulate(time, Enemies);
         }
     }
 

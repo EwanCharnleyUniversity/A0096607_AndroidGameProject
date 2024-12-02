@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 public class EnemyManager {
     private final int ENEMY_LIMIT = 512;
-    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
-    long spawnerTime = 250;
+    long spawnerTime = 0;
 
 
     public EnemyManager() {}
@@ -35,23 +35,23 @@ public class EnemyManager {
         //Log.d("Enemy Manager", "Enemies stored: " + enemies.size() + "     Enemy Capacity: " + ENEMY_LIMIT);
     }
 
-    public synchronized void SimulateEnemies() {
+    public synchronized void SimulateEnemies(long deltaTime) {
 
         if (enemies.isEmpty()) {
             return;
         }
 
         for(Enemy target : enemies) {
-            target.Simulate();
+            target.Simulate(deltaTime);
         }
     }
 
-    public synchronized void Spawner(Context context, long time) {
-        spawnerTime -= time;
+    public synchronized void Spawner(Context context, long deltaTime) {
+        spawnerTime -= deltaTime;
 
         if (spawnerTime <= 0) {
             AddEnemy(context);
-            spawnerTime = 2500;
+            spawnerTime = 100;
         }
     }
 
