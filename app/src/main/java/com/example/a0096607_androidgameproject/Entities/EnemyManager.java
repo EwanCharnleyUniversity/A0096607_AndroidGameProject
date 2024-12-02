@@ -51,7 +51,7 @@ public class EnemyManager {
 
         if (spawnerTime <= 0) {
             AddEnemy(context);
-            spawnerTime = 100;
+            spawnerTime = 2500;
         }
     }
 

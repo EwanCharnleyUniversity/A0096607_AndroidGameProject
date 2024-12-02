@@ -135,8 +135,12 @@ public class GameView extends SurfaceView implements Runnable {
                     break;
                 }
 
-                //testWeapon.Activate();
+                //for (int i = 0; i < 64; i++) {
+                //    bullets.SpawnBullet(testWeapon.position);
+                //}
+
                 bullets.SpawnBullet(testWeapon.position);
+                //testWeapon.Activate();
                 //heatManager.DumpHeat(15f);
 
                 break;

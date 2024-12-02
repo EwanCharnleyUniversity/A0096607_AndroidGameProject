@@ -8,10 +8,12 @@ import com.example.a0096607_androidgameproject.Entities.EnemyManager;
 import com.example.a0096607_androidgameproject.Graphics.DrawLine;
 import com.example.a0096607_androidgameproject.Vector2D;
 
+import java.util.Random;
+
 
 public class Bullet {
-    final private Vector2D startPoint;
-    final private Vector2D endPoint = new Vector2D(0,-5000);
+    final private Vector2D originPoint;
+    final private Vector2D endPoint;
 
     public int damage;
     public int pierce;
@@ -26,8 +28,15 @@ public class Bullet {
         damage = Damage;
         pierce = Pierce;
 
-        startPoint = new Vector2D(userPosition.x, userPosition.y);
-        endPoint.Addition(startPoint);
+        originPoint = new Vector2D(userPosition.x, userPosition.y);
+        endPoint = new Vector2D(userPosition.x, userPosition.y);
+
+        // Rotation, will need to make this better for later but it's accurate enough.
+        Vector2D rotation = new Vector2D(0,-5000);
+        //int randRotation = new Random().nextInt(360);
+        //rotation.Rotate(randRotation);
+
+        endPoint.Addition(rotation);
     }
 
 
@@ -42,30 +51,30 @@ public class Bullet {
         // We grab the fraction of our line to the bounding box of the enemy (f)
         // We have f1 and f2 representing the bottom clip and top clip of the line to the enemies y bounding values.
         // TODO: test out non precise rotated vectors for enemy collision (shotgun logic, spray, etc).
-        for (Enemy enemy : Enemies.enemies) {
-            if (pierce <= 0) {
-                return;
-            }
-
-            float enemyTop      = enemy.position.y - enemy.bounding.y / 2;
-            float enemyBottom   = enemy.position.y + enemy.bounding.y / 2;
-            float enemyLeft     = enemy.position.x - enemy.bounding.x / 2;
-            float enemyRight    = enemy.position.x + enemy.bounding.x / 2;
-
-            float topFraction = (enemyTop - startPoint.y) / (endPoint.y - startPoint.y);
-            float bottomFraction = (enemyBottom - startPoint.y) / (endPoint.y - startPoint.y);
-
-            float clippedLineTop = startPoint.y - (5000 * topFraction);
-            float clippedLineBottom = startPoint.y - (5000 * bottomFraction);
-
-            // Basic collision, is bullet within the enemies bounding?
-            if (startPoint.x > enemyLeft && startPoint.x < enemyRight) {
-                Log.d("Bullet!", "Collision");
-
-                enemy.alive = false;
-                pierce--;
-            }
-        }
+//        for (Enemy enemy : Enemies.enemies) {
+//            if (pierce <= 0) {
+//                return;
+//            }
+//
+//            float enemyTop      = enemy.position.y - enemy.bounding.y / 2;
+//            float enemyBottom   = enemy.position.y + enemy.bounding.y / 2;
+//            float enemyLeft     = enemy.position.x - enemy.bounding.x / 2;
+//            float enemyRight    = enemy.position.x + enemy.bounding.x / 2;
+//
+//            float topFraction = (enemyTop - originPoint.y) / (endPoint.y - originPoint.y);
+//            float bottomFraction = (enemyBottom - originPoint.y) / (endPoint.y - originPoint.y);
+//
+//            float clippedLineTop = originPoint.y - (5000 * topFraction);
+//            float clippedLineBottom = originPoint.y - (5000 * bottomFraction);
+//
+//            // Basic collision, is bullet within the enemies bounding?
+//            if (originPoint.x > enemyLeft && originPoint.x < enemyRight) {
+//                Log.d("Bullet!", "Collision");
+//
+//                enemy.alive = false;
+//                pierce--;
+//            }
+//        }
 
 
         if (timeActive > lifespan) {
@@ -78,7 +87,7 @@ public class Bullet {
         if (!visible) { return; }
 
         DrawLine line = new DrawLine();
-        line.Draw(startPoint, endPoint, canvas);
+        line.Draw(originPoint, endPoint, canvas);
 
         // Immediately turns off line rendering if it has no pierce, so it renders only once.
         if (pierce <= 0) {

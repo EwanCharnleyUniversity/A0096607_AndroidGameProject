@@ -1,6 +1,8 @@
 package com.example.a0096607_androidgameproject;
 
 
+import android.util.Log;
+
 // Vector2D alleviates calculations relating to worldspace position.
 public class Vector2D {
     public float x, y;
@@ -12,6 +14,17 @@ public class Vector2D {
 
     public float Magnitude() {
         return (float)Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    private double Degrees(double degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+    public void Rotate(double degrees) {
+        float tempX = ((float)Math.cos(Degrees(degrees)) * x) - ((float)Math.sin(Degrees(degrees)) * y);
+        float tempY = ((float)Math.sin(Degrees(degrees)) * x) + ((float)Math.cos(Degrees(degrees)) * y);
+        x = tempX;
+        y = tempY;
     }
 
     // Operators
