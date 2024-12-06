@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.a0096607_androidgameproject.Entities.Entity;
+import com.example.a0096607_androidgameproject.Graphics.TextureCache;
 import com.example.a0096607_androidgameproject.R;
 import com.example.a0096607_androidgameproject.Vector2D;
 
@@ -14,8 +15,8 @@ public abstract class BaseWeapon extends Entity {
     // Ammunition and Clip
     public int clipCurrent, clipMax;
 
-    public BaseWeapon(Context context) {
-        super(context, new Vector2D(250,250), R.drawable.coffee);
+    public BaseWeapon(TextureCache textures, Context context) {
+        super(textures, context, new Vector2D(250,250), R.drawable.coffee);
         position.x = new Random().nextInt(1000);
         position.y = 2000;
     }

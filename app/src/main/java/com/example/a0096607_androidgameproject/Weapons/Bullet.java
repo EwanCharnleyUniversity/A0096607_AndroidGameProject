@@ -3,12 +3,14 @@ package com.example.a0096607_androidgameproject.Weapons;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import com.example.a0096607_androidgameproject.Algebra;
 import com.example.a0096607_androidgameproject.Entities.Enemy;
 import com.example.a0096607_androidgameproject.Entities.EnemyManager;
 import com.example.a0096607_androidgameproject.Graphics.DrawLine;
 import com.example.a0096607_androidgameproject.Vector2D;
+import static com.example.a0096607_androidgameproject.Algebra.VectorRotationInRange;
 
-import java.util.Random;
+import java.util.Vector;
 
 
 public class Bullet {
@@ -31,10 +33,9 @@ public class Bullet {
         originPoint = new Vector2D(userPosition.x, userPosition.y);
         endPoint = new Vector2D(userPosition.x, userPosition.y);
 
-        // Rotation, will need to make this better for later but it's accurate enough.
+        // Rotation test
         Vector2D rotation = new Vector2D(0,-5000);
-        //int randRotation = new Random().nextInt(360);
-        //rotation.Rotate(randRotation);
+        rotation = VectorRotationInRange(rotation, 5);
 
         endPoint.Addition(rotation);
     }
@@ -51,30 +52,15 @@ public class Bullet {
         // We grab the fraction of our line to the bounding box of the enemy (f)
         // We have f1 and f2 representing the bottom clip and top clip of the line to the enemies y bounding values.
         // TODO: test out non precise rotated vectors for enemy collision (shotgun logic, spray, etc).
-//        for (Enemy enemy : Enemies.enemies) {
-//            if (pierce <= 0) {
-//                return;
-//            }
-//
-//            float enemyTop      = enemy.position.y - enemy.bounding.y / 2;
-//            float enemyBottom   = enemy.position.y + enemy.bounding.y / 2;
-//            float enemyLeft     = enemy.position.x - enemy.bounding.x / 2;
-//            float enemyRight    = enemy.position.x + enemy.bounding.x / 2;
-//
-//            float topFraction = (enemyTop - originPoint.y) / (endPoint.y - originPoint.y);
-//            float bottomFraction = (enemyBottom - originPoint.y) / (endPoint.y - originPoint.y);
-//
-//            float clippedLineTop = originPoint.y - (5000 * topFraction);
-//            float clippedLineBottom = originPoint.y - (5000 * bottomFraction);
-//
-//            // Basic collision, is bullet within the enemies bounding?
-//            if (originPoint.x > enemyLeft && originPoint.x < enemyRight) {
-//                Log.d("Bullet!", "Collision");
-//
-//                enemy.alive = false;
-//                pierce--;
-//            }
-//        }
+        for (Enemy enemy : Enemies.enemies) {
+            float enemyTop = enemy.position.y - enemy.bounding.y / 2;
+            float enemyBottom = enemy.position.y + enemy.bounding.y / 2;
+            float enemyLeft = enemy.position.x - enemy.bounding.x / 2;
+            float enemyRight = enemy.position.x + enemy.bounding.x / 2;
+
+
+
+        }
 
 
         if (timeActive > lifespan) {

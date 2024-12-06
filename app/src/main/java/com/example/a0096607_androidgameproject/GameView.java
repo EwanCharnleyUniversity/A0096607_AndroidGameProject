@@ -10,6 +10,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.a0096607_androidgameproject.Entities.EnemyManager;
+import com.example.a0096607_androidgameproject.Graphics.TextureCache;
 import com.example.a0096607_androidgameproject.Mechanics.BaseManager;
 import com.example.a0096607_androidgameproject.Weapons.BulletManager;
 import com.example.a0096607_androidgameproject.Weapons.Crossbow;
@@ -29,11 +30,12 @@ public class GameView extends SurfaceView implements Runnable {
 
     // Graphics Stuff
     private Canvas canvas;
+    private TextureCache textures;
 
     // Managers
-    BaseManager base;
-    BulletManager bullets;
-    EnemyManager enemies;
+    private BaseManager base;
+    private BulletManager bullets;
+    private EnemyManager enemies;
 
     // Class Tests
     private Crossbow testWeapon;
@@ -42,12 +44,15 @@ public class GameView extends SurfaceView implements Runnable {
     public GameView(Context context) {
         super(context);
 
+        textures = new TextureCache(context);
+        textures.printCacheKey();
+
         base = new BaseManager();
         bullets = new BulletManager();
         enemies = new EnemyManager();
 
         surfaceHolder = getHolder();
-        testWeapon = new Crossbow(context);
+        testWeapon = new Crossbow(textures, context);
     }
 
 
@@ -61,7 +66,7 @@ public class GameView extends SurfaceView implements Runnable {
             if (deltaTime > 1000 / FPS) {
                 update();
                 draw();
-                enemies.Spawner(getContext(), deltaTime);
+                enemies.Spawner(textures, getContext(), deltaTime);
                 bullets.SimulateBullets(deltaTime, enemies);
                 clock = System.currentTimeMillis();
             }

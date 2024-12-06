@@ -9,30 +9,30 @@ import android.util.Log;
 // If App is not found
 // do in terminal: \rm -r .android/
 public class MainActivity extends AppCompatActivity {
-    GameView gameView;
+    private GameView gameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("MainActivity", "onCreate initialised");
         gameView = new GameView(this);
         setContentView(gameView);
+        //Log.d("MainActivity", "Initialised");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        Log.d("MainActivity", "Resumed");
         gameView.resume();
+        //Log.d("MainActivity", "Resumed");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        Log.d("MainActivity", "Paused");
         gameView.pause();
+        //Log.d("MainActivity", "Paused");
     }
 }

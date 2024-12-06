@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+import com.example.a0096607_androidgameproject.Graphics.TextureCache;
 import com.example.a0096607_androidgameproject.R;
 import com.example.a0096607_androidgameproject.Vector2D;
 import com.example.a0096607_androidgameproject.Graphics.WorldTexture;
@@ -21,13 +22,13 @@ public abstract class Entity {
 
     // TODO: abstract position, velocity, and texture generation
     // Bounding could plausibly be relegated to an internal function.
-    public Entity(Context context, Vector2D Bounding, int Texture) {
+    public Entity(TextureCache textures, Context context, Vector2D Bounding, int Texture) {
         position = new Vector2D(0,0);
         velocity = new Vector2D(0,0.025f);
 
         bounding = Bounding;
 
-        imageTexture = new WorldTexture((int)bounding.x,(int)bounding.y, Texture, context);
+        imageTexture = new WorldTexture(textures, (int)bounding.x,(int)bounding.y, Texture, context);
     }
 
     public void Simulate(long deltaTime) {}

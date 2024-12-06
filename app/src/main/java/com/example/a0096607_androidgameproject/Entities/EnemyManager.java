@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import com.example.a0096607_androidgameproject.Graphics.TextureCache;
 import com.example.a0096607_androidgameproject.Weapons.Bullet;
 
 import java.util.ArrayList;
@@ -18,18 +19,18 @@ public class EnemyManager {
 
     public EnemyManager() {}
 
-    public synchronized void AddEnemy(Context context) {
+    public synchronized void AddEnemy(TextureCache textures, Context context) {
         if (enemies.size() >= ENEMY_LIMIT) {
             Enemy reference = enemies.get(0);
             enemies.remove(reference);
 
-            reference = new Enemy(context);
+            reference = new Enemy(textures, context);
             enemies.add(enemies.size(), reference);
 
             //Log.d("Enemy Manager", "Enemy recycled!");
         }
         else {
-            enemies.add(new Enemy(context));
+            enemies.add(new Enemy(textures, context));
         }
 
         //Log.d("Enemy Manager", "Enemies stored: " + enemies.size() + "     Enemy Capacity: " + ENEMY_LIMIT);
@@ -46,12 +47,12 @@ public class EnemyManager {
         }
     }
 
-    public synchronized void Spawner(Context context, long deltaTime) {
+    public synchronized void Spawner(TextureCache textures, Context context, long deltaTime) {
         spawnerTime -= deltaTime;
 
         if (spawnerTime <= 0) {
-            AddEnemy(context);
-            spawnerTime = 2500;
+            AddEnemy(textures, context);
+            spawnerTime = 1;
         }
     }
 

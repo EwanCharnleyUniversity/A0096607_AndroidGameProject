@@ -16,17 +16,6 @@ public class Vector2D {
         return (float)Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
-    private double Degrees(double degrees) {
-        return degrees * Math.PI / 180;
-    }
-
-    public void Rotate(double degrees) {
-        float tempX = ((float)Math.cos(Degrees(degrees)) * x) - ((float)Math.sin(Degrees(degrees)) * y);
-        float tempY = ((float)Math.sin(Degrees(degrees)) * x) + ((float)Math.cos(Degrees(degrees)) * y);
-        x = tempX;
-        y = tempY;
-    }
-
     // Operators
     public void Addition(Vector2D rhs) {
         this.x += rhs.x;
