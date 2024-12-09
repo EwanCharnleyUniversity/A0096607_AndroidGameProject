@@ -11,7 +11,7 @@ public class WorldTexture {
     private final Rect size;
 
     // We need to initialise the texture before calling the draw function.
-    public WorldTexture(TextureCache textures, int width, int height, int textureResource, Context view) {
+    public WorldTexture(TextureCache textures, int width, int height, Integer TextureID, Context context) {
         size = new Rect(0,0,width,height);
 
         bitmap = textures.getCacheResource("CROSSBOW", width, height).copy(Bitmap.Config.ARGB_4444, true);

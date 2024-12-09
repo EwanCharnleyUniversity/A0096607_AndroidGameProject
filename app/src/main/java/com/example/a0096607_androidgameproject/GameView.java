@@ -75,6 +75,9 @@ public class GameView extends SurfaceView implements Runnable {
 
 
     // Updates all in-game actions based on tick speed.
+    // DELTA TIME REFACTORING: global variable (bad but could be a necessary evil)
+    // Other option is to abstract all simulated function
+    // Final option is to Leave it as it.
     public void update() {
         base.Simulate();
 
