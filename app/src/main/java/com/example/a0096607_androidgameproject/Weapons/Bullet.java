@@ -3,12 +3,14 @@ package com.example.a0096607_androidgameproject.Weapons;
 import android.graphics.Canvas;
 import android.util.Log;
 
-import com.example.a0096607_androidgameproject.Algebra;
 import com.example.a0096607_androidgameproject.Entities.Enemy;
 import com.example.a0096607_androidgameproject.Entities.EnemyManager;
 import com.example.a0096607_androidgameproject.Graphics.DrawLine;
 import com.example.a0096607_androidgameproject.Vector2D;
+
+import static com.example.a0096607_androidgameproject.Algebra.LineToLineDetection;
 import static com.example.a0096607_androidgameproject.Algebra.VectorRotationInRange;
+import static com.example.a0096607_androidgameproject.Algebra.VectorSubtraction;
 
 import java.util.Vector;
 
@@ -35,11 +37,9 @@ public class Bullet {
 
         // Rotation test
         Vector2D rotation = new Vector2D(0,-5000);
-        rotation = VectorRotationInRange(rotation, 5);
-
+        //rotation = VectorRotationInRange(rotation, 5);
         endPoint.Addition(rotation);
     }
-
 
     public void Simulate(long time, EnemyManager Enemies) {
         if (!visible) {
@@ -53,13 +53,28 @@ public class Bullet {
         // We have f1 and f2 representing the bottom clip and top clip of the line to the enemies y bounding values.
         // TODO: test out non precise rotated vectors for enemy collision (shotgun logic, spray, etc).
         for (Enemy enemy : Enemies.enemies) {
-            float enemyTop = enemy.position.y - enemy.bounding.y / 2;
-            float enemyBottom = enemy.position.y + enemy.bounding.y / 2;
-            float enemyLeft = enemy.position.x - enemy.bounding.x / 2;
-            float enemyRight = enemy.position.x + enemy.bounding.x / 2;
 
+            Vector2D enemyBL = new Vector2D(
+                    enemy.position.x - enemy.bounding.x / 2,
+                    enemy.position.y + enemy.bounding.y / 2
+            );
+            Vector2D enemyBR = new Vector2D(
+                    enemy.position.x + enemy.bounding.x / 2,
+                    enemy.position.y + enemy.bounding.y / 2
+            );
+            Vector2D enemyTL = new Vector2D(
+                    enemy.position.x - enemy.bounding.x / 2,
+                    enemy.position.y - enemy.bounding.y / 2
+            );
+            Vector2D enemyTR = new Vector2D(
+                    enemy.position.x + enemy.bounding.x / 2,
+                    enemy.position.y - enemy.bounding.y / 2
+            );
 
-
+            LineToLineDetection(originPoint, endPoint, enemyBL, enemyBR);
+            LineToLineDetection(originPoint, endPoint, enemyBR, enemyTR);
+            LineToLineDetection(originPoint, endPoint, enemyTR, enemyTL);
+            LineToLineDetection(originPoint, endPoint, enemyTL, enemyBL);
         }
 
 
@@ -74,6 +89,7 @@ public class Bullet {
 
         DrawLine line = new DrawLine();
         line.Draw(originPoint, endPoint, canvas);
+
 
         // Immediately turns off line rendering if it has no pierce, so it renders only once.
         if (pierce <= 0) {

@@ -116,7 +116,8 @@ public class GameView extends SurfaceView implements Runnable {
             // Attempt to rejoin with the Main Activity
             Log.d("GameView", "Paused");
             gameThread.join();
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

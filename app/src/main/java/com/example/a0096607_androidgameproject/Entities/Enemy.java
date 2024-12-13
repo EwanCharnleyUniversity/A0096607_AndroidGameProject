@@ -11,20 +11,21 @@ import java.util.Random;
 
 
 public class Enemy extends Entity {
-
     public boolean alive = true;
 
     public Enemy(TextureCache textures, Context context) {
-        super(textures, context, new Vector2D(300,100), R.drawable.kerfus);
+        super(textures, context, new Vector2D(200,200), "ENEMY");
         position.x = new Random().nextInt(1000);
         position.y = 0;
     }
 
     @Override
     public void Simulate(long deltaTime) {
-        if (!alive) {
-            return;
-        }
+        // DEBUG: Random Death chance.
+//        if (new Random().nextInt(100) == 1) {
+//            alive = false;
+//            return;
+//        }
 
         if (position.y >= 2000) {
             alive = false;

@@ -16,7 +16,7 @@ public abstract class BaseWeapon extends Entity {
     public int clipCurrent, clipMax;
 
     public BaseWeapon(TextureCache textures, Context context) {
-        super(textures, context, new Vector2D(250,250), R.drawable.coffee);
+        super(textures, context, new Vector2D(250,250), "CROSSBOW");
         position.x = new Random().nextInt(1000);
         position.y = 2000;
     }

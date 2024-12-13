@@ -53,7 +53,6 @@ public class TextureCache {
         // Iterate through the Textures Enum and initialise the resources found there.
         for (Textures id : Textures.values()) {
             Bitmap bitmap = BitmapFactory.decodeResource(view.getResources(), Textures.textureResource(id));
-            //bitmap = Bitmap.createScaledBitmap(bitmap, 100,100, false);
             textureCache.put(id.name(), bitmap);
         }
     }

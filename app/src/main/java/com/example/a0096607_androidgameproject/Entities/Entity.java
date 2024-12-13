@@ -14,18 +14,15 @@ import com.example.a0096607_androidgameproject.Graphics.WorldTexture;
 
 public abstract class Entity {
 
-    public Vector2D position;
-    public Vector2D velocity;
-    public Vector2D bounding;
+    public Vector2D position = new Vector2D(0,0);
+    public Vector2D velocity = new Vector2D(0,0);
+    public Vector2D bounding = new Vector2D(0,0);
 
     public WorldTexture imageTexture;
 
     // TODO: abstract position, velocity, and texture generation
     // Bounding could plausibly be relegated to an internal function.
-    public Entity(TextureCache textures, Context context, Vector2D Bounding, int Texture) {
-        position = new Vector2D(0,0);
-        velocity = new Vector2D(0,0.025f);
-
+    public Entity(TextureCache textures, Context context, Vector2D Bounding, String Texture) {
         bounding = Bounding;
 
         imageTexture = new WorldTexture(textures, (int)bounding.x,(int)bounding.y, Texture, context);

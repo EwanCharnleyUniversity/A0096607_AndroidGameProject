@@ -8,32 +8,49 @@ import com.example.a0096607_androidgameproject.Graphics.TextureCache;
 import com.example.a0096607_androidgameproject.Weapons.Bullet;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 
 public class EnemyManager {
-    private final int ENEMY_LIMIT = 512;
+    private final int ENEMY_LIMIT = 1;
     public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-
-    long spawnerTime = 0;
-
 
     public EnemyManager() {}
 
     public synchronized void AddEnemy(TextureCache textures, Context context) {
-        if (enemies.size() >= ENEMY_LIMIT) {
-            Enemy reference = enemies.get(0);
+        //Log.d("Enemy Manager", "size: " + enemies.size());
+
+        // Checks the current enemy pool for any dead enemies. If any are found, they are put into a dead enemy pool
+        // and the first dead enemy is recycled immediately, rather than generate new enemies up until the cap is reached.
+        Vector<Integer> deadEnemyPool = new Vector<Integer>();
+        for (int i = 0; i != enemies.size(); i++) {
+            if (!enemies.get(i).alive) {
+                deadEnemyPool.add(i);
+            }
+        }
+
+        if (!deadEnemyPool.isEmpty()) {
+            Enemy reference = enemies.get(deadEnemyPool.get(0));
             enemies.remove(reference);
 
             reference = new Enemy(textures, context);
             enemies.add(enemies.size(), reference);
 
-            //Log.d("Enemy Manager", "Enemy recycled!");
+            return;
+        }
+
+        // Otherwise, if the enemy pool is reached with no death, we recycle the first enemy immediately as to prevent
+        // indefinite generation.
+        if (enemies.size() == ENEMY_LIMIT) {
+            Enemy reference = enemies.get(0);
+            enemies.remove(reference);
+
+            reference = new Enemy(textures, context);
+            enemies.add(enemies.size(), reference);
         }
         else {
             enemies.add(new Enemy(textures, context));
         }
-
-        //Log.d("Enemy Manager", "Enemies stored: " + enemies.size() + "     Enemy Capacity: " + ENEMY_LIMIT);
     }
 
     public synchronized void SimulateEnemies(long deltaTime) {
@@ -43,16 +60,22 @@ public class EnemyManager {
         }
 
         for(Enemy target : enemies) {
-            target.Simulate(deltaTime);
+            if (target.alive) {
+                target.Simulate(deltaTime);
+            }
         }
     }
 
+    // Spawner logic
+    private long spawnerTime = 0;
+    private long spawnTime = 1000;
     public synchronized void Spawner(TextureCache textures, Context context, long deltaTime) {
+
         spawnerTime -= deltaTime;
 
         if (spawnerTime <= 0) {
+            spawnerTime = spawnTime;
             AddEnemy(textures, context);
-            spawnerTime = 1;
         }
     }
 
@@ -64,7 +87,7 @@ public class EnemyManager {
         int limit = 0;
         for(Enemy target : enemies) {
             limit++;
-            if (limit > ENEMY_LIMIT / 4) {
+            if (limit > 128) {
                 break;
             }
 
